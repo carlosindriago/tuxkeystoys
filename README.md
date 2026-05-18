@@ -1,6 +1,9 @@
 # TuxKeysToys 🐧⌨️
 
-![TuxKeysToys Screenshot](assets/screenshot.png)
+<div align="center">
+  <img src="assets/screenshot.png" alt="TuxKeysToys Main Interface" width="45%">
+  <img src="assets/screenshot_vk.png" alt="TuxKeysToys Virtual Keyboard" width="45%">
+</div>
 
 TuxKeysToys es una utilidad gráfica para MX Linux (y distribuciones basadas en Debian/Ubuntu) diseñada para facilitar el remapeo de teclas a nivel de hardware. Su principal ventaja es que **afecta exclusivamente al teclado integrado de la laptop**, respetando el comportamiento original de cualquier teclado externo (USB, Bluetooth, etc.).
 
@@ -26,6 +29,7 @@ Sin embargo, **debería funcionar en el 99% de las laptops del mercado** (Asus, 
 - Python 3
 - Entorno Virtual de Python (`python3-venv`)
 - Soporte para Tkinter (`python3-tk`)
+- CustomTkinter (interfaz moderna)
 - `keyd` instalado y corriendo como servicio.
 
 ### Instalación de dependencias
@@ -52,7 +56,10 @@ cd tuxkeystoys
 # 2. Crear entorno virtual (con acceso a los paquetes del sistema para Tkinter)
 python3 -m venv venv --system-site-packages
 
-# 3. Lanzar la aplicación
+# 3. Instalar librerías de interfaz moderna
+sudo -E ./venv/bin/pip install customtkinter
+
+# 4. Lanzar la aplicación
 sudo -E ./venv/bin/python tuxkeystoys.py
 ```
 
