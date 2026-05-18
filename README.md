@@ -1,18 +1,25 @@
-# TuxKeysToys
+# TuxKeysToys 🐧⌨️
 
-TuxKeysToys es una utilidad gráfica para MX Linux (y distribuciones basadas en Debian) diseñada para facilitar el remapeo de teclas a nivel de hardware, afectando **exclusivamente al teclado integrado de la laptop** y respetando el comportamiento original de cualquier teclado externo (USB, Bluetooth, etc.).
+TuxKeysToys es una utilidad gráfica para MX Linux (y distribuciones basadas en Debian/Ubuntu) diseñada para facilitar el remapeo de teclas a nivel de hardware. Su principal ventaja es que **afecta exclusivamente al teclado integrado de la laptop**, respetando el comportamiento original de cualquier teclado externo (USB, Bluetooth, etc.).
 
-Esta herramienta es ideal para laptops con teclas físicas dañadas, actuando como una alternativa a utilidades como PowerToys de Windows, pero enfocada en las necesidades de Linux.
+Esta herramienta es ideal para laptops con teclas físicas dañadas, actuando como una alternativa a utilidades como PowerToys de Windows, pero enfocada en las necesidades y la arquitectura de Linux.
 
-## Características
+## Características ✨
 
-- **Remapeo Exclusivo:** Los cambios se aplican usando el ID de hardware (`0001:0001`), garantizando que solo el teclado de la laptop (ej. ThinkPad T420s) sea afectado.
+- **Remapeo Exclusivo:** Por defecto, los cambios se aplican usando el ID de hardware estándar de los teclados integrados (`0001:0001` y otros), garantizando que los teclados externos no se vean afectados.
 - **Teclado Virtual:** Interfaz amigable para seleccionar teclas que no puedes presionar físicamente (las dañadas).
 - **Detección Física:** Permite presionar la tecla física que deseas usar como reemplazo para asegurar que el sistema la detecta correctamente.
 - **Persistente:** La configuración sobrevive a reinicios y funciona desde la pantalla de inicio de sesión.
 - **Backend Robusto:** Utiliza `keyd`, un demonio de remapeo de teclas a nivel de kernel muy ligero y poderoso.
 
-## Requisitos Previos
+## Compatibilidad 💻
+
+La aplicación fue desarrollada y probada en una **ThinkPad T420s**, interceptando automáticamente los circuitos internos (Teclado principal, botones extra y ACPI). 
+Sin embargo, **debería funcionar en el 99% de las laptops del mercado** (Asus, Dell, HP, Acer, etc.), ya que la inmensa mayoría utiliza el identificador estándar `0001:0001` (AT Translated Set 2 keyboard) para el teclado integrado.
+
+*Si tienes una laptop de otra marca y alguna tecla multimedia no se remapea, puedes contribuir añadiendo el ID de hardware de tu laptop al código.*
+
+## Requisitos Previos 🛠️
 
 - Python 3
 - Entorno Virtual de Python (`python3-venv`)
@@ -33,12 +40,12 @@ sudo systemctl enable keyd
 sudo systemctl start keyd
 ```
 
-## Instalación y Configuración del Proyecto
+## Instalación del Proyecto 🚀
 
 ```bash
-# 1. Clonar o crear el directorio
-mkdir -p ~/tuxkeystoys
-cd ~/tuxkeystoys
+# 1. Clonar el repositorio
+git clone https://github.com/carlosindriago/tuxkeystoys.git
+cd tuxkeystoys
 
 # 2. Crear entorno virtual (con acceso a los paquetes del sistema para Tkinter)
 python3 -m venv venv --system-site-packages
@@ -47,28 +54,28 @@ python3 -m venv venv --system-site-packages
 sudo -E ./venv/bin/python tuxkeystoys.py
 ```
 
-## Uso
+## Uso 🎮
 
-1. Lanza la aplicación ejecutando `sudo -E ./venv/bin/python tuxkeystoys.py` dentro del directorio del proyecto.
-2. Haz clic en "Seleccionar..." debajo de **Tecla Dañada**. Se abrirá una ventana.
-3. Si la tecla está físicamente dañada, bscala y haz clic en ella en el **Teclado Virtual** mostrado en pantalla.
+1. Lanza la aplicación ejecutando `sudo -E ./venv/bin/python tuxkeystoys.py`.
+2. Haz clic en "Seleccionar..." debajo de **Tecla Dañada**.
+3. Si la tecla está físicamente rota, búscala y haz clic en ella en el **Teclado Virtual** mostrado en pantalla.
 4. Haz clic en "Seleccionar..." debajo de **Reemplazar con**.
 5. Presiona la tecla física que deseas usar para reemplazarla.
 6. Haz clic en **Aplicar y Guardar Cambios**.
 7. ¡Disfruta de tu teclado funcionando nuevamente!
 
-## Historial de Desarrollo
+## Contribuciones 🤝
 
-- Se creó el concepto basado en la necesidad de reemplazar teclas dañadas (como `< >`, `Super`, etc.) sin afectar un teclado externo en MX Linux.
-- Se seleccionó `keyd` como motor por su capacidad para filtrar reglas por ID de dispositivo.
-- Se implementó una interfaz gráfica con Tkinter (`tuxkeystoys.py`).
-- Se resolvieron problemas de compatibilidad de entornos virtuales con `tkinter` al forzar el uso de `python3-venv --system-site-packages`.
-- Se introdujo un teclado virtual interactivo para solucionar el problema de no poder escribir o presionar las teclas dañadas para configurarlas.
-- Se descubrió que las laptops ThinkPad exponen múltiples interfaces de teclado (`0001:0001` para el principal, `17aa:5054` para botones extra, y `0000:0000` para ACPI). El programa ahora intercepta todos estos circuitos internos para asegurar que teclas como `Menu` o `RePag` sean remapeadas correctamente.
-- Se mapearon correctamente teclas con nombres atípicos en el subsistema evdev/keyd:
-  - La tecla **Super/Windows** debe ser asignada a `meta` (no a `leftmeta`).
-  - La tecla física **Menu** es detectada a nivel de hardware como `compose`.
-  - Las teclas multimedia (ej. `xf86forward`) deben tener el prefijo `xf86` removido (ej. `forward`) para que `keyd` las acepte.
+¡Las contribuciones son bienvenidas! Especialmente si:
+- Quieres añadir soporte (nuevos IDs de hardware) para teclas multimedia exclusivas de otras marcas de laptops.
+- Quieres mejorar la interfaz gráfica o empaquetarla como `.deb` o AppImage/Flatpak.
+- Tienes ideas para nuevas funcionalidades.
+
+Siéntete libre de abrir un *Issue* o enviar un *Pull Request*.
+
+## Licencia 📄
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
 
 ---
-*Desarrollado en MX Linux.*
+*Desarrollado con ❤️ en MX Linux por Carlos Indriago y la ayuda de IA.*
