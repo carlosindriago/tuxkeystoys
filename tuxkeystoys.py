@@ -56,13 +56,29 @@ class VirtualKeyboardDialog:
     def __init__(self, parent, title, callback):
         self.top = ctk.CTkToplevel(parent)
         self.top.title(title)
-        self.top.geometry("900x380")
-        self.top.minsize(850, 350)
+        self.top.geometry("900x450")
+        self.top.minsize(850, 400)
         self.top.transient(parent)
         self.callback = callback
         
-        lbl = ctk.CTkLabel(self.top, text="Haz clic en el TECLADO VIRTUAL  --o--  PRESIONA una TECLA FÍSICA ahora", font=ctk.CTkFont(family="Arial", size=16, weight="bold"))
-        lbl.pack(pady=15)
+        self.is_chord_mode = ctk.BooleanVar(value=False)
+        self.current_chord = []
+        self.current_chord_display = []
+        
+        lbl = ctk.CTkLabel(self.top, text="Haz clic en el TECLADO VIRTUAL  --o--  PRESIONA una TECLA FÍSICA", font=ctk.CTkFont(family="Arial", size=16, weight="bold"))
+        lbl.pack(pady=(15, 5))
+
+        top_bar = ctk.CTkFrame(self.top, fg_color="transparent")
+        top_bar.pack(fill="x", padx=20, pady=5)
+        
+        chord_cb = ctk.CTkCheckBox(top_bar, text="Modo Combinación (Múltiples teclas al mismo tiempo)", variable=self.is_chord_mode, command=self.on_chord_mode_change)
+        chord_cb.pack(side="left")
+        
+        self.chord_display_lbl = ctk.CTkLabel(top_bar, text="Combinación actual: (ninguna)", font=ctk.CTkFont(family="Arial", size=14, slant="italic"), text_color="#2196F3")
+        self.chord_display_lbl.pack(side="left", padx=20)
+        
+        self.btn_save_chord = ctk.CTkButton(top_bar, text="Guardar Combinación", fg_color="#4CAF50", hover_color="#388E3C", command=self.save_chord, state="disabled")
+        self.btn_save_chord.pack(side="right")
 
         kb_frame = ctk.CTkFrame(self.top, fg_color="transparent")
         kb_frame.pack(expand=True, fill="both", padx=10, pady=10)
@@ -75,7 +91,6 @@ class VirtualKeyboardDialog:
                 if key == "Space": width = 250
                 elif key in ["Enter", "LShift", "RShift", "Caps", "Bksp", "Tab", "Super/Win"]: width = 85
                 
-                # Estilo tipo teclas de Mac (gris oscuro/claro con esquinas redondeadas)
                 btn = ctk.CTkButton(row_frame, text=key, width=width, height=45, corner_radius=8,
                                     font=ctk.CTkFont(family="Arial", size=13),
                                     fg_color=("#E0E0E0", "#333333"), hover_color=("#BDBDBD", "#555555"), 
@@ -89,10 +104,35 @@ class VirtualKeyboardDialog:
         # Esperar un poco antes de capturar el foco para evitar error en Linux
         self.top.after(100, self.top.grab_set)
 
+    def on_chord_mode_change(self):
+        if not self.is_chord_mode.get():
+            self.current_chord = []
+            self.current_chord_display = []
+            self.chord_display_lbl.configure(text="Combinación actual: (ninguna)")
+            self.btn_save_chord.configure(state="disabled")
+        self.top.focus_set()
+
+    def add_to_chord(self, display_name, keyd_name):
+        if keyd_name not in self.current_chord:
+            self.current_chord.append(keyd_name)
+            self.current_chord_display.append(display_name)
+            self.chord_display_lbl.configure(text=f"Combinación: {' + '.join(self.current_chord_display)}")
+            self.btn_save_chord.configure(state="normal")
+
+    def save_chord(self):
+        if self.current_chord:
+            final_keyd = "+".join(self.current_chord)
+            final_display = " + ".join(self.current_chord_display)
+            self.callback(final_display, final_keyd)
+            self.top.destroy()
+
     def on_virtual_click(self, key_label):
         keyd_name = VK_TO_KEYD.get(key_label, "")
-        self.callback(f"{key_label}", keyd_name)
-        self.top.destroy()
+        if self.is_chord_mode.get():
+            self.add_to_chord(key_label, keyd_name)
+        else:
+            self.callback(f"{key_label}", keyd_name)
+            self.top.destroy()
 
     def on_physical_keypress(self, event):
         keysym = event.keysym
@@ -103,8 +143,22 @@ class VirtualKeyboardDialog:
                 keyd_name = keyd_name[4:]
             
         display_name = f"{keysym}"
-        self.callback(display_name, keyd_name)
-        self.top.destroy()
+        
+        if self.is_chord_mode.get():
+            self.add_to_chord(display_name, keyd_name)
+        else:
+            self.callback(display_name, keyd_name)
+            self.top.destroy()
+
+def get_laptop_model():
+    try:
+        with open("/sys/devices/virtual/dmi/id/product_name", "r") as f:
+            model = f.read().strip()
+            if model:
+                return model
+    except Exception:
+        pass
+    return "tu laptop"
 
 class KeyboardRemapperApp:
     def __init__(self, root):
@@ -116,7 +170,8 @@ class KeyboardRemapperApp:
         title_lbl = ctk.CTkLabel(root, text="Remapeo de Teclas Dañadas", font=ctk.CTkFont(family="Arial", size=24, weight="bold"))
         title_lbl.pack(pady=(20, 5))
         
-        desc_lbl = ctk.CTkLabel(root, text="Estos cambios SOLO afectarán al teclado integrado de tu ThinkPad T420s.", font=ctk.CTkFont(family="Arial", size=12), text_color="gray")
+        laptop_model = get_laptop_model()
+        desc_lbl = ctk.CTkLabel(root, text=f"Estos cambios SOLO afectarán al teclado integrado de {laptop_model}.", font=ctk.CTkFont(family="Arial", size=12), text_color="gray")
         desc_lbl.pack(pady=(0, 20))
 
         # Contenedor principal con fondo redondeado (ahora con scroll)
