@@ -64,7 +64,11 @@ sudo -E ./venv/bin/python tuxkeystoys.py
 - Se implementó una interfaz gráfica con Tkinter (`tuxkeystoys.py`).
 - Se resolvieron problemas de compatibilidad de entornos virtuales con `tkinter` al forzar el uso de `python3-venv --system-site-packages`.
 - Se introdujo un teclado virtual interactivo para solucionar el problema de no poder escribir o presionar las teclas dañadas para configurarlas.
-- Se corrigieron bugs relacionados con nombres de teclas incorrectos (ej. `meta` vs `leftmeta`) en la sintaxis de `keyd` que causaban la caída del demonio.
+- Se descubrió que las laptops ThinkPad exponen múltiples interfaces de teclado (`0001:0001` para el principal, `17aa:5054` para botones extra, y `0000:0000` para ACPI). El programa ahora intercepta todos estos circuitos internos para asegurar que teclas como `Menu` o `RePag` sean remapeadas correctamente.
+- Se mapearon correctamente teclas con nombres atípicos en el subsistema evdev/keyd:
+  - La tecla **Super/Windows** debe ser asignada a `meta` (no a `leftmeta`).
+  - La tecla física **Menu** es detectada a nivel de hardware como `compose`.
+  - Las teclas multimedia (ej. `xf86forward`) deben tener el prefijo `xf86` removido (ej. `forward`) para que `keyd` las acepte.
 
 ---
 *Desarrollado en MX Linux.*

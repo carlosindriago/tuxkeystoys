@@ -3,7 +3,7 @@ from tkinter import messagebox
 import os
 import subprocess
 
-INTERNAL_KB_ID = "0001:0001"
+INTERNAL_KB_IDS = "0001:0001\n17aa:5054\n0000:0000"
 CONFIG_FILE = "/etc/keyd/laptop_remap.conf"
 
 # Diseño del teclado virtual
@@ -23,7 +23,7 @@ VK_TO_KEYD = {
     "Tab": "tab", "Q": "q", "W": "w", "E": "e", "R": "r", "T": "t", "Y": "y", "U": "u", "I": "i", "O": "o", "P": "p", "[": "leftbrace", "]": "rightbrace", "\\": "backslash",
     "Caps": "capslock", "A": "a", "S": "s", "D": "d", "F": "f", "G": "g", "H": "h", "J": "j", "K": "k", "L": "l", ";": "semicolon", "'": "apostrophe", "Enter": "enter",
     "LShift": "leftshift", "< >": "102nd", "Z": "z", "X": "x", "C": "c", "V": "v", "B": "b", "N": "n", "M": "m", ",": "comma", ".": "dot", "/": "slash", "RShift": "rightshift",
-    "LCtrl": "leftcontrol", "Super/Win": "leftmeta", "LAlt": "leftalt", "Space": "space", "RAlt": "rightalt", "RCtrl": "rightcontrol",
+    "LCtrl": "leftcontrol", "Super/Win": "meta", "LAlt": "leftalt", "Space": "space", "RAlt": "rightalt", "RCtrl": "rightcontrol",
     "Up": "up", "Left": "left", "Down": "down", "Right": "right"
 }
 
@@ -34,10 +34,10 @@ KEYSYM_TO_KEYD = {
     "Tab": "tab", "bracketleft": "leftbrace", "bracketright": "rightbrace", "backslash": "backslash",
     "Caps_Lock": "capslock", "semicolon": "semicolon", "apostrophe": "apostrophe", "Return": "enter",
     "Shift_L": "leftshift", "less": "102nd", "greater": "102nd", "comma": "comma", "period": "dot", "slash": "slash", "Shift_R": "rightshift",
-    "Control_L": "leftcontrol", "Super_L": "leftmeta", "Alt_L": "leftalt", "space": "space", "Alt_R": "rightalt", "Control_R": "rightcontrol",
+    "Control_L": "leftcontrol", "Super_L": "meta", "Alt_L": "leftalt", "space": "space", "Alt_R": "rightalt", "Control_R": "rightcontrol",
     "Up": "up", "Left": "left", "Down": "down", "Right": "right",
     "Prior": "pageup", "Next": "pagedown", "End": "end", "Home": "home", "Insert": "insert", "Delete": "delete",
-    "Print": "sysrq", "Menu": "menu", "Pause": "pause", "Scroll_Lock": "scrolllock", "Num_Lock": "numlock"
+    "Print": "sysrq", "Menu": "compose", "Pause": "pause", "Scroll_Lock": "scrolllock", "Num_Lock": "numlock"
 }
 
 # Rellenar alfabeto y números para teclado físico
@@ -94,6 +94,8 @@ class VirtualKeyboardDialog:
         if not keyd_name:
             # Fallback simple
             keyd_name = keysym.lower()
+            if keyd_name.startswith("xf86"):
+                keyd_name = keyd_name[4:]
             
         display_name = f"Física: {keysym}"
         self.callback(display_name, keyd_name)
@@ -194,7 +196,7 @@ class KeyboardRemapperApp:
         VirtualKeyboardDialog(self.root, title, callback)
 
     def apply_remap(self):
-        config_content = f"# Archivo autogenerado por TuxKeysToys\n[ids]\n{INTERNAL_KB_ID}\n\n[main]\n"
+        config_content = f"# Archivo autogenerado por TuxKeysToys\n[ids]\n{INTERNAL_KB_IDS}\n\n[main]\n"
         reglas_activas = 0
         for btn_broken, btn_new in self.rows:
             if btn_broken.keyd_name and btn_new.keyd_name:
