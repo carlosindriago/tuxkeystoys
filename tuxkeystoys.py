@@ -119,32 +119,51 @@ class KeyboardRemapperApp:
         desc_lbl = ctk.CTkLabel(root, text="Estos cambios SOLO afectarán al teclado integrado de tu ThinkPad T420s.", font=ctk.CTkFont(family="Arial", size=12), text_color="gray")
         desc_lbl.pack(pady=(0, 20))
 
-        # Contenedor principal con fondo redondeado
-        self.rules_frame = ctk.CTkFrame(root, corner_radius=15, fg_color=("#F5F5F5", "#2B2B2B"))
+        # Contenedor principal con fondo redondeado (ahora con scroll)
+        self.rules_frame = ctk.CTkScrollableFrame(root, corner_radius=15, fg_color=("#F5F5F5", "#2B2B2B"))
         self.rules_frame.pack(fill="both", expand=True, padx=30, pady=10)
 
-        # Encabezados
-        ctk.CTkLabel(self.rules_frame, text="Tecla Dañada", font=ctk.CTkFont(family="Arial", size=14, weight="bold")).grid(row=0, column=0, padx=20, pady=15)
-        ctk.CTkLabel(self.rules_frame, text="Reemplazar con", font=ctk.CTkFont(family="Arial", size=14, weight="bold")).grid(row=0, column=1, padx=20, pady=15)
+        # Encabezados (se añaden a un frame superior para que no hagan scroll, o los dejamos dentro)
+        self.header_frame = ctk.CTkFrame(self.rules_frame, fg_color="transparent")
+        self.header_frame.pack(fill="x", pady=(0, 10))
+        ctk.CTkLabel(self.header_frame, text="Tecla Dañada", font=ctk.CTkFont(family="Arial", size=14, weight="bold")).pack(side="left", padx=50)
+        ctk.CTkLabel(self.header_frame, text="Reemplazar con", font=ctk.CTkFont(family="Arial", size=14, weight="bold")).pack(side="left", padx=65)
 
         self.rows = []
         
         self.load_existing_config()
 
-        for i in range(1, 7):
+        # Cargar reglas guardadas, o un mínimo de 6 filas vacías
+        rules_to_create = max(6, len(self.saved_rules))
+        for i in range(rules_to_create):
             saved_physical = ""
             saved_action = ""
             if len(self.saved_rules) > 0:
                 saved_physical, saved_action = self.saved_rules.pop(0)
-            self.add_rule_row(i, saved_physical, saved_action)
+            self.add_rule_row(saved_physical, saved_action)
+
+        # Contenedor para botones inferiores
+        self.bottom_frame = ctk.CTkFrame(root, fg_color="transparent")
+        self.bottom_frame.pack(pady=15)
+
+        # Botón para añadir una nueva fila
+        self.add_btn = ctk.CTkButton(self.bottom_frame, text="+ Añadir Regla", 
+                                       font=ctk.CTkFont(family="Arial", size=14, weight="bold"),
+                                       height=40, corner_radius=10,
+                                       fg_color="#4CAF50", hover_color="#388E3C",
+                                       command=self.add_empty_rule)
+        self.add_btn.pack(side="left", padx=15)
 
         # Botón de Aplicar estilo destacado
-        self.apply_btn = ctk.CTkButton(root, text="Aplicar y Guardar Cambios", 
+        self.apply_btn = ctk.CTkButton(self.bottom_frame, text="Aplicar y Guardar Cambios", 
                                        font=ctk.CTkFont(family="Arial", size=16, weight="bold"),
-                                       height=50, corner_radius=10,
+                                       height=40, corner_radius=10,
                                        fg_color="#2196F3", hover_color="#1976D2",
                                        command=self.apply_remap)
-        self.apply_btn.pack(pady=25)
+        self.apply_btn.pack(side="left", padx=15)
+
+    def add_empty_rule(self):
+        self.add_rule_row("", "")
 
     def load_existing_config(self):
         self.saved_rules = []
@@ -168,37 +187,42 @@ class KeyboardRemapperApp:
         if not keyd_name: return "Seleccionar..."
         return KEYD_TO_DISPLAY.get(keyd_name, f"{keyd_name}")
 
-    def add_rule_row(self, row_index, saved_physical="", saved_action=""):
+    def add_rule_row(self, saved_physical="", saved_action=""):
         broken_display = self.get_display_name(saved_action)
         new_display = self.get_display_name(saved_physical)
 
-        btn_broken = ctk.CTkButton(self.rules_frame, text=broken_display, width=200, height=35, corner_radius=8,
+        row_frame = ctk.CTkFrame(self.rules_frame, fg_color="transparent")
+        row_frame.pack(fill="x", pady=4)
+
+        btn_broken = ctk.CTkButton(row_frame, text=broken_display, width=200, height=35, corner_radius=8,
                                    font=ctk.CTkFont(family="Arial", size=13),
-                                   fg_color=("#E0E0E0", "#444444"), hover_color=("#BDBDBD", "#666666"), text_color=("black", "white"),
-                                   command=lambda: self.open_vk(btn_broken, "broken"))
-        btn_broken.grid(row=row_index, column=0, pady=8, padx=20)
+                                   fg_color=("#E0E0E0", "#444444"), hover_color=("#BDBDBD", "#666666"), text_color=("black", "white"))
+        btn_broken.configure(command=lambda: self.open_vk(btn_broken, "broken"))
+        btn_broken.pack(side="left", padx=(20, 10))
         btn_broken.keyd_name = saved_action
         
-        btn_new = ctk.CTkButton(self.rules_frame, text=new_display, width=200, height=35, corner_radius=8,
+        btn_new = ctk.CTkButton(row_frame, text=new_display, width=200, height=35, corner_radius=8,
                                 font=ctk.CTkFont(family="Arial", size=13),
-                                fg_color=("#E0E0E0", "#444444"), hover_color=("#BDBDBD", "#666666"), text_color=("black", "white"),
-                                command=lambda: self.open_vk(btn_new, "new"))
-        btn_new.grid(row=row_index, column=1, pady=8, padx=20)
+                                fg_color=("#E0E0E0", "#444444"), hover_color=("#BDBDBD", "#666666"), text_color=("black", "white"))
+        btn_new.configure(command=lambda: self.open_vk(btn_new, "new"))
+        btn_new.pack(side="left", padx=(35, 10))
         btn_new.keyd_name = saved_physical
         
-        btn_clear = ctk.CTkButton(self.rules_frame, text="✕", width=35, height=35, corner_radius=8,
+        row_tuple = (btn_broken, btn_new)
+        
+        btn_clear = ctk.CTkButton(row_frame, text="✕", width=35, height=35, corner_radius=8,
                                   font=ctk.CTkFont(family="Arial", size=14, weight="bold"),
-                                  fg_color="#EF5350", hover_color="#D32F2F", text_color="white",
-                                  command=lambda: self.clear_row(btn_broken, btn_new))
-        btn_clear.grid(row=row_index, column=2, pady=8, padx=(0, 20))
+                                  fg_color="#EF5350", hover_color="#D32F2F", text_color="white")
+        btn_clear.configure(command=lambda rf=row_frame, rt=row_tuple: self.remove_row(rf, rt))
+        btn_clear.pack(side="left", padx=(15, 20))
 
-        self.rows.append((btn_broken, btn_new))
+        self.rows.append(row_tuple)
 
-    def clear_row(self, btn_broken, btn_new):
-        btn_broken.configure(text="Seleccionar...")
-        btn_broken.keyd_name = ""
-        btn_new.configure(text="Seleccionar...")
-        btn_new.keyd_name = ""
+    def remove_row(self, row_frame, row_tuple):
+        # Destruir el widget visual y sacarlo de la lista
+        row_frame.destroy()
+        if row_tuple in self.rows:
+            self.rows.remove(row_tuple)
 
     def open_vk(self, button_widget, mode):
         title = "Selecciona la Tecla DAÑADA" if mode == "broken" else "Selecciona el REEMPLAZO"
