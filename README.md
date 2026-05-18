@@ -1,5 +1,7 @@
 # TuxKeysToys 🐧⌨️
 
+![TuxKeysToys Screenshot](assets/screenshot.png)
+
 TuxKeysToys es una utilidad gráfica para MX Linux (y distribuciones basadas en Debian/Ubuntu) diseñada para facilitar el remapeo de teclas a nivel de hardware. Su principal ventaja es que **afecta exclusivamente al teclado integrado de la laptop**, respetando el comportamiento original de cualquier teclado externo (USB, Bluetooth, etc.).
 
 Esta herramienta es ideal para laptops con teclas físicas dañadas, actuando como una alternativa a utilidades como PowerToys de Windows, pero enfocada en las necesidades y la arquitectura de Linux.
