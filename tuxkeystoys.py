@@ -155,7 +155,7 @@ def get_laptop_model():
         with open("/sys/devices/virtual/dmi/id/product_name", "r") as f:
             model = f.read().strip()
             if model:
-                return model
+                return f"tu portátil {model}"
     except Exception:
         pass
     return "tu laptop"
