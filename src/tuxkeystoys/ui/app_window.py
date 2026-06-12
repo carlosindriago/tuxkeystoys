@@ -36,7 +36,7 @@ class KeyboardRemapperApp:
         desc_lbl.pack(anchor="w", pady=(2, 0))
 
         # Contenedor principal
-        self.rules_frame = ctk.CTkScrollableFrame(root, corner_radius=12, fg_color=("#F3F4F6", "#1F2937"))
+        self.rules_frame = ctk.CTkScrollableFrame(root, corner_radius=12, fg_color=("#F3F4F6", "transparent"))
         self.rules_frame.pack(fill="both", expand=True, padx=30, pady=10)
 
         # Encabezados de columnas
@@ -91,7 +91,7 @@ class KeyboardRemapperApp:
         new_display = self.get_display_name(saved_physical)
 
         # Card container for each row
-        row_card = ctk.CTkFrame(self.rules_frame, fg_color=("#FFFFFF", "#374151"), corner_radius=8, border_width=1, border_color=("#E5E7EB", "#4B5563"))
+        row_card = ctk.CTkFrame(self.rules_frame, fg_color=("#FFFFFF", "#2B2B2B"), corner_radius=8, border_width=1, border_color=("#E5E7EB", "#3A3A3A"))
         row_card.pack(fill="x", pady=6, padx=5)
         
         # Inner layout
@@ -100,8 +100,8 @@ class KeyboardRemapperApp:
 
         btn_broken = ctk.CTkButton(inner_frame, text=broken_display, width=220, height=40, corner_radius=6,
                                    font=ctk.CTkFont(family=FONT_FAMILY, size=13),
-                                   fg_color=("#F3F4F6", "#4B5563"), hover_color=("#E5E7EB", "#6B7280"), text_color=("black", "white"),
-                                   border_width=1, border_color=("#D1D5DB", "#6B7280"))
+                                   fg_color=("#F3F4F6", "#3A3A3A"), hover_color=("#E5E7EB", "#4D4D4D"), text_color=("black", "white"),
+                                   border_width=1, border_color=("#D1D5DB", "#555555"))
         btn_broken.configure(command=lambda: self.open_vk(btn_broken, "broken"))
         btn_broken.pack(side="left", padx=(5, 15))
         btn_broken.keyd_name = saved_action
@@ -112,8 +112,8 @@ class KeyboardRemapperApp:
 
         btn_new = ctk.CTkButton(inner_frame, text=new_display, width=220, height=40, corner_radius=6,
                                 font=ctk.CTkFont(family=FONT_FAMILY, size=13),
-                                fg_color=("#F3F4F6", "#4B5563"), hover_color=("#E5E7EB", "#6B7280"), text_color=("black", "white"),
-                                border_width=1, border_color=("#D1D5DB", "#6B7280"))
+                                fg_color=("#F3F4F6", "#3A3A3A"), hover_color=("#E5E7EB", "#4D4D4D"), text_color=("black", "white"),
+                                border_width=1, border_color=("#D1D5DB", "#555555"))
         btn_new.configure(command=lambda: self.open_vk(btn_new, "new"))
         btn_new.pack(side="left", padx=(15, 10))
         btn_new.keyd_name = saved_physical

@@ -43,7 +43,7 @@ for k, v in VK_TO_KEYD.items():
 
 
 FONT_FAMILY = "Roboto"
-COLOR_MODIFIER = ("#E5E7EB", "#4B5563") # Color para teclas de modificación (Shift, Ctrl, etc.)
+COLOR_MODIFIER = ("#E5E7EB", "#2B2B2B") # Color para teclas de modificación (Shift, Ctrl, etc.)
 
 class VirtualKeyboardDialog:
     def __init__(self, parent, title: str, callback):
@@ -64,7 +64,7 @@ class VirtualKeyboardDialog:
         lbl = ctk.CTkLabel(header_frame, text="🖱️ Haz clic en una tecla o ⌨️ Presiónala físicamente", font=ctk.CTkFont(family=FONT_FAMILY, size=16, weight="bold"))
         lbl.pack()
 
-        top_bar = ctk.CTkFrame(self.top, fg_color=("#F9FAFB", "#1F2937"), corner_radius=8)
+        top_bar = ctk.CTkFrame(self.top, fg_color=("#F9FAFB", "#212121"), corner_radius=8)
         top_bar.pack(fill="x", padx=30, pady=(10, 15), ipady=5)
         
         chord_cb = ctk.CTkCheckBox(top_bar, text="Modo Combinación (ej. Ctrl + C)", variable=self.is_chord_mode, 
@@ -83,7 +83,7 @@ class VirtualKeyboardDialog:
         kb_container = ctk.CTkFrame(self.top, fg_color="transparent")
         kb_container.pack(expand=True)
 
-        kb_frame = ctk.CTkFrame(kb_container, fg_color=("#E5E7EB", "#111827"), corner_radius=12, border_width=1, border_color=("#D1D5DB", "#374151"))
+        kb_frame = ctk.CTkFrame(kb_container, fg_color=("#E5E7EB", "#1A1A1A"), corner_radius=12, border_width=1, border_color=("#D1D5DB", "#333333"))
         kb_frame.pack(padx=10, pady=10, ipadx=10, ipady=10)
 
         modifiers = ["Esc", "Bksp", "Tab", "Caps", "Enter", "LShift", "RShift", "LCtrl", "LAlt", "Super/Win", "RAlt", "RCtrl"]
@@ -101,18 +101,18 @@ class VirtualKeyboardDialog:
                     width = 50
                 
                 # Color especial para modificadores vs teclas normales
-                btn_color = COLOR_MODIFIER if key in modifiers else ("#FFFFFF", "#374151")
+                btn_color = COLOR_MODIFIER if key in modifiers else ("#FFFFFF", "#3A3A3A")
                 text_col = ("black", "white")
-                hover_col = ("#D1D5DB", "#6B7280")
+                hover_col = ("#D1D5DB", "#4D4D4D")
                 
                 if key == "Space":
-                    btn_color = ("#FFFFFF", "#374151")
+                    btn_color = ("#FFFFFF", "#3A3A3A")
                 
                 btn = ctk.CTkButton(row_frame, text=key, width=width, height=45, corner_radius=6,
                                     font=ctk.CTkFont(family=FONT_FAMILY, size=13),
                                     fg_color=btn_color, hover_color=hover_col, 
                                     text_color=text_col,
-                                    border_width=1, border_color=("#D1D5DB", "#4B5563"),
+                                    border_width=1, border_color=("#D1D5DB", "#444444"),
                                     command=lambda k=key: self.on_virtual_click(k))
                 btn.pack(side="left", padx=3)
 
