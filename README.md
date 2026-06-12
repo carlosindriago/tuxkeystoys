@@ -17,16 +17,17 @@ Esta herramienta es ideal para recuperar la funcionalidad de laptops con teclas 
 ---
 
 ## 📑 Tabla de Contenidos
-- [Características](#características)
-- [Arquitectura (MVC)](#arquitectura-mvc)
+- [Características](#caracteristicas)
+- [Arquitectura (MVC)](#arquitectura)
 - [Compatibilidad](#compatibilidad)
-- [Requisitos Previos](#requisitos-previos)
-- [Instalación](#instalación-del-proyecto)
+- [Requisitos Previos](#requisitos)
+- [Instalación](#instalacion)
 - [Uso](#uso)
 - [Contribuciones y Desarrollo](#contribuciones)
 
 ---
 
+<a id="caracteristicas"></a>
 ## Características ✨
 
 - **Remapeo Exclusivo y Seguro:** Modifica eventos del identificador de hardware del teclado integrado (`0001:0001`), evitando que tus periféricos externos se remapeen accidentalmente.
@@ -34,6 +35,7 @@ Esta herramienta es ideal para recuperar la funcionalidad de laptops con teclas 
 - **Backend a nivel Kernel:** Desarrollado sobre `keyd`, un demonio ultra-ligero que intercepta llamadas a muy bajo nivel, garantizando que el remapeo funcione incluso desde la pantalla de inicio de sesión (Display Manager) o terminales (TTY).
 - **Persistente:** La configuración sobrevive a reinicios.
 
+<a id="arquitectura"></a>
 ## Arquitectura (MVC) 🏗️
 
 Para garantizar un código mantenible y altamente testeable, TuxKeysToys sigue principios de Arquitectura Limpia (MVC):
@@ -42,10 +44,12 @@ Para garantizar un código mantenible y altamente testeable, TuxKeysToys sigue p
 - **Infraestructura (`src/tuxkeystoys/infrastructure/`):** Gestiona los efectos secundarios, como la lectura/escritura de los archivos de configuración en `/etc/keyd/` y la invocación de subprocesos con permisos elevados (`SystemHandler`).
 - **UI (`src/tuxkeystoys/ui/`):** Vistas completamente desacopladas de la lógica, construidas con `customtkinter` para asegurar un aspecto moderno (`AppWindow`, `VirtualKeyboardDialog`).
 
+<a id="compatibilidad"></a>
 ## Compatibilidad 💻
 
 Probado exitosamente en una **ThinkPad T420s**, interceptando automáticamente los teclados internos y botones ACPI. Debería funcionar *Out-of-the-Box* en la inmensa mayoría de laptops del mercado (Asus, Dell, HP, Acer, etc.).
 
+<a id="requisitos"></a>
 ## Requisitos Previos 🛠️
 
 - **Python 3.8+** y soporte para Tkinter (`python3-tk`).
@@ -63,6 +67,7 @@ sudo systemctl enable keyd
 sudo systemctl start keyd
 ```
 
+<a id="instalacion"></a>
 ## Instalación del Proyecto 🚀
 
 ```bash
@@ -77,6 +82,7 @@ python3 -m venv venv --system-site-packages
 ./venv/bin/pip install -e .
 ```
 
+<a id="uso"></a>
 ## Uso 🎮
 
 1. Lanza la aplicación ejecutando:
@@ -90,6 +96,7 @@ python3 -m venv venv --system-site-packages
 6. Haz clic en **💾 Aplicar Cambios**.
 7. ¡Disfruta de tu teclado!
 
+<a id="contribuciones"></a>
 ## Contribuciones 🤝
 
 ¡Las contribuciones son bienvenidas! Revisa nuestro documento [CONTRIBUTING.md](CONTRIBUTING.md) para ver las directrices de desarrollo, cómo correr las pruebas unitarias y cómo enviar Pull Requests.
