@@ -1,44 +1,61 @@
 # TuxKeysToys 🐧⌨️
 
 <div align="center">
+  <img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="Python 3.8+">
+  <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License MIT">
+  <img src="https://img.shields.io/badge/code%20style-ruff-000000.svg" alt="Code style: ruff">
+  <img src="https://img.shields.io/github/actions/workflow/status/carlosindriago/tuxkeystoys/ci.yml?branch=main" alt="CI Status">
+  <br><br>
   <img src="assets/screenshot.png" alt="TuxKeysToys Main Interface" width="45%">
   <img src="assets/screenshot_vk.png" alt="TuxKeysToys Virtual Keyboard" width="45%">
 </div>
 
-TuxKeysToys es una utilidad gráfica para MX Linux (y distribuciones basadas en Debian/Ubuntu) diseñada para facilitar el remapeo de teclas a nivel de hardware. Su principal ventaja es que **afecta exclusivamente al teclado integrado de la laptop**, respetando el comportamiento original de cualquier teclado externo (USB, Bluetooth, etc.).
+**TuxKeysToys** es una utilidad gráfica para Linux diseñada para facilitar el remapeo de teclas a nivel de hardware. Su principal ventaja es que **afecta exclusivamente al teclado integrado de la laptop**, respetando el comportamiento original de teclados externos (USB, Bluetooth, etc.).
 
-Esta herramienta es ideal para laptops con teclas físicas dañadas, actuando como una alternativa a utilidades como PowerToys de Windows, pero enfocada en las necesidades y la arquitectura de Linux.
+Esta herramienta es ideal para recuperar la funcionalidad de laptops con teclas físicas dañadas, actuando de forma similar a utilidades como *PowerToys* en Windows, pero construida específicamente sobre las entrañas de Linux.
+
+---
+
+## 📑 Tabla de Contenidos
+- [Características](#características-)
+- [Arquitectura (MVC)](#arquitectura-mvc-)
+- [Compatibilidad](#compatibilidad-)
+- [Requisitos Previos](#requisitos-previos-)
+- [Instalación](#instalación-del-proyecto-)
+- [Uso](#uso-)
+- [Contribuciones y Desarrollo](#contribuciones-)
+
+---
 
 ## Características ✨
 
-- **Remapeo Exclusivo:** Por defecto, los cambios se aplican usando el ID de hardware estándar de los teclados integrados (`0001:0001` y otros), garantizando que los teclados externos no se vean afectados.
-- **Teclado Virtual:** Interfaz amigable para seleccionar teclas que no puedes presionar físicamente (las dañadas).
-- **Detección Física:** Permite presionar la tecla física que deseas usar como reemplazo para asegurar que el sistema la detecta correctamente.
-- **Persistente:** La configuración sobrevive a reinicios y funciona desde la pantalla de inicio de sesión.
-- **Backend Robusto:** Utiliza `keyd`, un demonio de remapeo de teclas a nivel de kernel muy ligero y poderoso.
+- **Remapeo Exclusivo y Seguro:** Modifica eventos del identificador de hardware del teclado integrado (`0001:0001`), evitando que tus periféricos externos se remapeen accidentalmente.
+- **Teclado Virtual Interactivo:** Interfaz para seleccionar combinaciones y teclas que ya no puedes presionar físicamente.
+- **Backend a nivel Kernel:** Desarrollado sobre `keyd`, un demonio ultra-ligero que intercepta llamadas a muy bajo nivel, garantizando que el remapeo funcione incluso desde la pantalla de inicio de sesión (Display Manager) o terminales (TTY).
+- **Persistente:** La configuración sobrevive a reinicios.
+
+## Arquitectura (MVC) 🏗️
+
+Para garantizar un código mantenible y altamente testeable, TuxKeysToys sigue principios de Arquitectura Limpia (MVC):
+
+- **Core (`src/tuxkeystoys/core/`):** Contiene las reglas puras del negocio y lógica de validación de mapeos (`RemapService`).
+- **Infraestructura (`src/tuxkeystoys/infrastructure/`):** Gestiona los efectos secundarios, como la lectura/escritura de los archivos de configuración en `/etc/keyd/` y la invocación de subprocesos con permisos elevados (`SystemHandler`).
+- **UI (`src/tuxkeystoys/ui/`):** Vistas completamente desacopladas de la lógica, construidas con `customtkinter` para asegurar un aspecto moderno (`AppWindow`, `VirtualKeyboardDialog`).
 
 ## Compatibilidad 💻
 
-La aplicación fue desarrollada y probada en una **ThinkPad T420s**, interceptando automáticamente los circuitos internos (Teclado principal, botones extra y ACPI). 
-Sin embargo, **debería funcionar en el 99% de las laptops del mercado** (Asus, Dell, HP, Acer, etc.), ya que la inmensa mayoría utiliza el identificador estándar `0001:0001` (AT Translated Set 2 keyboard) para el teclado integrado.
-
-*Si tienes una laptop de otra marca y alguna tecla multimedia no se remapea, puedes contribuir añadiendo el ID de hardware de tu laptop al código.*
+Probado exitosamente en una **ThinkPad T420s**, interceptando automáticamente los teclados internos y botones ACPI. Debería funcionar *Out-of-the-Box* en la inmensa mayoría de laptops del mercado (Asus, Dell, HP, Acer, etc.).
 
 ## Requisitos Previos 🛠️
 
-- Python 3
-- Entorno Virtual de Python (`python3-venv`)
-- Soporte para Tkinter (`python3-tk`)
-- CustomTkinter (interfaz moderna)
-- `keyd` instalado y corriendo como servicio.
+- **Python 3.8+** y soporte para Tkinter (`python3-tk`).
+- **Dependencias base de Python:** `python3-venv` y `build-essential`.
+- **`keyd`** instalado y corriendo como servicio en el sistema.
 
-### Instalación de dependencias
+### Instalación de `keyd` (Ubuntu / Debian / MX Linux)
 
 ```bash
-# 1. Instalar herramientas del sistema
 sudo apt update && sudo apt install -y build-essential git python3-tk python3-venv
-
-# 2. Instalar keyd
 git clone https://github.com/rvaiya/keyd /tmp/keyd
 cd /tmp/keyd
 make && sudo make install
@@ -53,38 +70,35 @@ sudo systemctl start keyd
 git clone https://github.com/carlosindriago/tuxkeystoys.git
 cd tuxkeystoys
 
-# 2. Crear entorno virtual (con acceso a los paquetes del sistema para Tkinter)
+# 2. Crear entorno virtual (con acceso a librerías del sistema para Tkinter)
 python3 -m venv venv --system-site-packages
 
-# 3. Instalar librerías de interfaz moderna
-sudo -E ./venv/bin/pip install customtkinter
-
-# 4. Lanzar la aplicación
-sudo -E ./venv/bin/python tuxkeystoys.py
+# 3. Instalar TuxKeysToys
+./venv/bin/pip install -e .
 ```
 
 ## Uso 🎮
 
-1. Lanza la aplicación ejecutando `sudo -E ./venv/bin/python tuxkeystoys.py`.
+1. Lanza la aplicación ejecutando:
+   ```bash
+   sudo -E ./venv/bin/tuxkeystoys
+   ```
 2. Haz clic en "Seleccionar..." debajo de **Tecla Dañada**.
-3. Si la tecla está físicamente rota, búscala y haz clic en ella en el **Teclado Virtual** mostrado en pantalla.
+3. Si la tecla está rota físicamente, selecciónala en el **Teclado Virtual**.
 4. Haz clic en "Seleccionar..." debajo de **Reemplazar con**.
-5. Presiona la tecla física que deseas usar para reemplazarla.
-6. Haz clic en **Aplicar y Guardar Cambios**.
-7. ¡Disfruta de tu teclado funcionando nuevamente!
+5. Presiona físicamente la tecla que actuará como reemplazo.
+6. Haz clic en **💾 Aplicar Cambios**.
+7. ¡Disfruta de tu teclado!
 
 ## Contribuciones 🤝
 
-¡Las contribuciones son bienvenidas! Especialmente si:
-- Quieres añadir soporte (nuevos IDs de hardware) para teclas multimedia exclusivas de otras marcas de laptops.
-- Quieres mejorar la interfaz gráfica o empaquetarla como `.deb` o AppImage/Flatpak.
-- Tienes ideas para nuevas funcionalidades.
+¡Las contribuciones son bienvenidas! Revisa nuestro documento [CONTRIBUTING.md](CONTRIBUTING.md) para ver las directrices de desarrollo, cómo correr las pruebas unitarias y cómo enviar Pull Requests.
 
-Siéntete libre de abrir un *Issue* o enviar un *Pull Request*.
+También te pedimos que leas nuestro [Código de Conducta](CODE_OF_CONDUCT.md).
 
 ## Licencia 📄
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
 
 ---
-*Desarrollado con ❤️ en MX Linux por Carlos Indriago y la ayuda de IA.*
+*Desarrollado con ❤️ en MX Linux por Carlos Indriago.*

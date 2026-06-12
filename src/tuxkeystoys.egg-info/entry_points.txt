@@ -1,0 +1,2 @@
+[console_scripts]
+tuxkeystoys = tuxkeystoys.main:main
