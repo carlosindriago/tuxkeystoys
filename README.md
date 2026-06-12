@@ -17,13 +17,13 @@ Esta herramienta es ideal para recuperar la funcionalidad de laptops con teclas 
 ---
 
 ## 📑 Tabla de Contenidos
-- [Características](#características-)
-- [Arquitectura (MVC)](#arquitectura-mvc-)
-- [Compatibilidad](#compatibilidad-)
-- [Requisitos Previos](#requisitos-previos-)
-- [Instalación](#instalación-del-proyecto-)
-- [Uso](#uso-)
-- [Contribuciones y Desarrollo](#contribuciones-)
+- [Características](#características)
+- [Arquitectura (MVC)](#arquitectura-mvc)
+- [Compatibilidad](#compatibilidad)
+- [Requisitos Previos](#requisitos-previos)
+- [Instalación](#instalación-del-proyecto)
+- [Uso](#uso)
+- [Contribuciones y Desarrollo](#contribuciones)
 
 ---
 
