@@ -36,7 +36,7 @@ class KeyboardRemapperApp:
         desc_lbl.pack(anchor="w", pady=(2, 0))
 
         # Contenedor principal
-        self.rules_frame = ctk.CTkScrollableFrame(root, corner_radius=12, fg_color=("#F3F4F6", "transparent"))
+        self.rules_frame = ctk.CTkScrollableFrame(root, corner_radius=12, fg_color=("#F3F4F6", "#242424"))
         self.rules_frame.pack(fill="both", expand=True, padx=30, pady=10)
 
         # Encabezados de columnas
